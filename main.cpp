@@ -3,12 +3,14 @@
 #include "buyer.h"
 
 enum PrimaryPrompt{LOGIN, REGISTER, EXIT};
-
+enum RegisterPrompt{CREATE_BUYER, CREATE_SELLER, BACK};
 using namespace std;
 
 int main() {
     //create a loop prompt 
     PrimaryPrompt prompt = LOGIN;
+    RegisterPrompt regPrompt = CREATE_BUYER;
+
     while (prompt != EXIT) {
         cout << "Select an option: " << endl;
         cout << "1. Login" << endl;
@@ -59,6 +61,7 @@ int main() {
                 Display confirmation dialogue
                 If confirmed, delete account and return to main menu
                 If not, return to Buyer menu
+
                 assume user is logged in as Seller for now
                 9. Check Inventory
                 10. Add Item to Inventory
@@ -72,17 +75,88 @@ int main() {
                 **/
                 break;
             case REGISTER:
-                cout << "Register selected." << endl;
+                regPrompt = CREATE_BUYER; // reset regPrompt to CREATE_BUYER when entering register menu
+                while (regPrompt != BACK){
+                    cout << "Register selected. " << endl;
+                    cout << "Select an option: " << endl;
+                    cout << "1. Create Buyer Account" << endl;
+                    cout << "2. Create Seller Account" << endl;
+                    cout << "3. Back" << endl;
+                    int regChoice;
+                    cin >> regChoice;
+                    regPrompt = static_cast<RegisterPrompt>(regChoice - 1);
+                    switch (regPrompt) {
+                        case CREATE_BUYER:
+                            cout << "Create Buyer Account selected." << endl;
+                            {
+                                string name, address, phone, email;
+                                cout << "Enter Name: ";
+                                cin.ignore(); // Clear the newline character from the input buffer
+                                getline(cin, name);
+                                cout << "Enter Home Address: ";
+                                getline(cin, address);
+                                cout << "Enter Phone Number: ";
+                                getline(cin, phone);
+                                cout << "Enter Email: ";
+                                getline(cin, email);
+                                // Here you would typically create a new Buyer object and save it
+                                int buyerId = 1; // This would be generated or retrieved from a database
+                                double initialDeposit = 0.0; // Initial deposit can be set to 0 or prompted from user
+                                BankCustomer newCustomer(buyerId, name, initialDeposit);
+                                Buyer newBuyer(buyerId, name, newCustomer);
+                                cout << "Buyer Account created for " << name << endl;
+                            }
+                            break;
+                        case CREATE_SELLER:
+                            cout << "Create Seller Account selected." << endl;
+                            {
+                                string homeAddress, phone, email;
+                                cout << "Enter Home Address: ";
+                                cin.ignore(); // Clear the newline character from the input buffer
+                                getline(cin, homeAddress);
+                                cout <<"Enter Phone Number: ";
+                                getline(cin,phone);
+                                cout << "Enter Email: ";
+                                getline(cin, email);
+
+                                string storeName, storeAddress, storePhoneNumber, storeEmail;
+                                cout << "Enter Store Name: ";
+                                getline(cin, storeName);
+                                cout << "Enter Store Address: ";
+                                getline(cin, storeAddress);
+                                cout << "Enter Store Phone Number: ";
+                                getline(cin, storePhoneNumber);
+                                cout << "Enter Store Email: ";
+                                getline(cin, storeEmail);
+
+                                double initialDeposit;
+                                cout << "Enter Initial Deposit Amount: ";
+                                cin >> initialDeposit;
+                                cin.ignore(); // Clear the newline character from the input buffer
+                                // Here you would typically create a new Seller object and save it
+                                cout << "Seller Account created and linked to Buyer Account." << endl;
+                            }
+                            break;
+                        case BACK:
+                            cout << "Back selected." << endl;
+                            break;
+                        default:
+                            cout << "Invalid option." << endl;
+                            break;
+                    }
+                }
                 /* if register is selected then went throuhh registration process:
                 1. Create a new Buyer Account
                 Must provides: Name, Home Address, Phone number, Email
                 2. Option to create a Seller Account (will be linked to Buyer account)
-                Must provides: Store Name, Store Address, Store Phone number, Store Email
+                Must Provides 1: Home Address, Phone number, Email
+                Must provides 2: Store Name, Store Address, Store Phone number, Store Email
+                Must provides 3: initial deposit amount
                 After finished immediately logged in as Buyer/Seller
                 */
                 break;
             case EXIT:
-                cout << "Exiting." << std::endl;
+                cout << "Exiting." << endl;
                 break;
             default:
                 cout << "Invalid option." << endl;
